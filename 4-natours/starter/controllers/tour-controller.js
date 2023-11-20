@@ -1,4 +1,4 @@
-const Tour = require('./../models/tourModel');
+const Tour = require('../models/tourModel');
 
 const getTour = async (req, res) => {
   try {
@@ -55,25 +55,31 @@ const getAllTour = async (req, res) => {
   }
 };
 
-const createTour = async (req, res) => {
-  const data = req.body;
-  console.log(data);
-  try {
-    const tour = await Tour.create(data);
-    res.status(200).json({
-      status: 'success',
-      data: {
-        tour: tour,
-      },
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({
-      status: 'fail',
-      message: err,
-    });
+const catchAsync = fn => {
+  fn(req,res,next)
+}
+
+const createTour = fn(
+  async (req, res, next) => {
+    const data = req.body;
+    console.log(data);
+    try {
+      const tour = await Tour.create(data);
+      res.status(200).json({
+        status: 'success',
+        data: {
+          tour: tour,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        status: 'fail',
+        message: err,
+      });
+    }
   }
-};
+);
 
 const updateTour = async (req, res) => {
   const id = req.params.id;
